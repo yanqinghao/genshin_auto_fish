@@ -4,6 +4,6 @@ python -m venv .venv
 .venv\Scripts\python setup.py develop
 .venv\Scripts\python -m pip install pyinstaller
 
-.venv\Scripts\pyinstaller --additional-hooks-dir tools/hooks --clean --noconfirm -D run.py -n suanpan-data-analysis
+.venv\Scripts\pyinstaller --additional-hooks-dir tools/hooks --clean --noconfirm -D fishing.py -n fishing
 
 Compress-Archive "./dist/*" -DestinationPath 'auto-fishing.zip'
