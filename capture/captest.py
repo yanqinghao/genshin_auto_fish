@@ -5,7 +5,7 @@ import numpy as np
 import win32api, win32con, win32gui, win32ui
 from pathlib import Path
 import yaml
-
+'''
 def get_window_pos(name):
     name = name
     handle = win32gui.FindWindow(None, name)
@@ -17,6 +17,7 @@ def get_window_pos(name):
 
 (x1, y1, x2, y2), handle = get_window_pos('原神')
 print(x1,y1,x2,y2)
+
 '''
 CONFIG_PATH = Path(__file__).parent.parent.joinpath("config.yaml")
 assert CONFIG_PATH.is_file()
@@ -26,20 +27,24 @@ with open(CONFIG_PATH, encoding='utf-8') as f:
     DEFAULT_MONITOR_WIDTH = result.get("windows").get("monitor_width")
     DEFAULT_MONITOR_HEIGHT = result.get("windows").get("monitor_height")
     WINDOW_NAME = result.get("game").get("window_name")
+handle = win32gui.FindWindow(None, WINDOW_NAME)   
 
-'''
-#handle = win32gui.FindWindow(None, WINDOW_NAME)    
 win32gui.SendMessage(handle, win32con.WM_SYSCOMMAND, win32con.SC_RESTORE, 0) #restore窗口   
-win32gui.SendMessage(handle, win32con.WM_SYSCOMMAND, win32con.SC_MAXIMIZE, 0) #最大化窗口
-win32gui.SetForegroundWindow(handle)# 设为高亮
+#win32gui.SendMessage(handle, win32con.WM_SYSCOMMAND, win32con.SC_MAXIMIZE, 0) #最大化窗口
+#win32gui.SetForegroundWindow(handle)# 设为高亮
 
-hwnd=handle
-#hwnd = win32gui.FindWindow(None, WINDOW_NAME)
+hwnd=win32gui.FindWindow(None, WINDOW_NAME)
+
+#(x1, y1, x2, y2)=win32gui.GetWindowRect(hwnd)
+#print(x1,y1,x2,y2)
+
+#hwnd=win32gui.FindWindow(None, '原神')
 
 left, top, right, bottom = win32gui.GetWindowRect(hwnd)
 w=right #windows(monitor)_width
 h=bottom #DEFAULT_MONITOR_HEIGHT
 print(left, top, right, bottom)
+
 '''
 region=None
 if region is not None:
@@ -75,7 +80,7 @@ win32gui.ReleaseDC(hwnd, wDC)
 win32gui.DeleteObject(dataBitMap.GetHandle())
 
 print(cvtcolor)
-filename='cap.png'
+filename='capquanping4.png'
 cv2.imwrite(filename, cvtcolor, [int(cv2.IMWRITE_PNG_COMPRESSION), 1]) 
 #cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR) #颜色空间转换,cv2.cvtColor(p1,p2) 是颜色空间转换函数，p1是需要转换的图片，p2是转换成何种格式。
 #cv2.cvtColor输出是'numpy.ndarray'
