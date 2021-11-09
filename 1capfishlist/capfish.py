@@ -131,6 +131,7 @@ def hello_world(context):
 
     print('init ok')
     winsound.Beep(500, 500)
+    time.sleep(5)
     #keyboard.wait('r')
     if args.demo == "image":
         fishlist=get_fish_types(predictor, n=12, rate=0.6)
