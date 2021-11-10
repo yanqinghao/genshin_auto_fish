@@ -1,13 +1,11 @@
 import suanpan
 from suanpan.app import app
 from suanpan.app.arguments import String, Image, Npy, Json, List,Float, Int
-#from suanpan.log import logger
+from suanpan.log import logger
 
 import argparse
 import os
 import time
-
-from loguru import logger
 
 import torch
 import keyboard
@@ -16,20 +14,23 @@ import winsound
 from yolox.exp import get_exp
 from yolox.utils import fuse_model, get_model_info
 
-from fisher.environment import *
-from fisher.predictor import *
-from fisher.models import FishNet
+#from fisher.environment import *
+#from fisher.predictor import *
+#from fisher.models import FishNet
 
 import time
-from loguru import logger
-
-import os
-import torch
+#from loguru import logger
 import cv2
 
 from yolox.data.data_augment import ValTransform
 from yolox.data.datasets import FISH_CLASSES
 from yolox.utils import postprocess, vis
+
+from utils import *
+import pyautogui
+from copy import deepcopy
+from collections import Counter
+import traceback
 
 
 #@app.input(Image(key="inputData1", default="Suanpan"))
@@ -43,7 +44,7 @@ from yolox.utils import postprocess, vis
 @app.param(Float(key="param5", alias="nms"))
 @app.param(Int(key="param6", alias="tsize"))
 @app.param(String(key="param7", alias="device"))
-@app.output(List(key="outputData1",alias="msgout"))
+@app.output(Json(key="outputData1",alias="msgout"))
 
 def hello_world(context):
     args = context.args
@@ -125,9 +126,9 @@ def hello_world(context):
 
     predictor = Predictor(model, exp, FISH_CLASSES, trt_file, decoder, args.device, fp16, legacy)
 
-    agent = FishNet(in_ch=n_states, out_ch=n_actions) #DQN
-    agent.load_state_dict(torch.load(model_dir))
-    agent.eval()
+    #agent = FishNet(in_ch=n_states, out_ch=n_actions) #DQN
+    #agent.load_state_dict(torch.load(model_dir))
+    #agent.eval()
 
     print('init ok')
     winsound.Beep(500, 500)
@@ -135,7 +136,7 @@ def hello_world(context):
     #keyboard.wait('r')
     if args.demo == "image":
         fishlist=get_fish_types(predictor, n=12, rate=0.6)
-    print(fishlist)
+    logger.info(f'{fishlist}')
     winsound.Beep(500, 500)
     return fishlist
 
