@@ -139,7 +139,7 @@ def hello_world(context):
     winsound.Beep(330, 550)
     time.sleep(8)
     throw_rod(predictor,last_fish_type)
-    return f'{last_fish_type}'
+    return last_fish_type
 
 
     
