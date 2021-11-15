@@ -43,7 +43,7 @@ def hello_world(context):
     fishtype = args.inputData1
 
     winsound.Beep(330, 550)
-    time.sleep(8)
+    time.sleep(1)
 
 
     bite_timeout=20
@@ -58,14 +58,9 @@ def hello_world(context):
         times+=1
         if times>bite_timeout:
             env.drag()
-            time.sleep(3)
+            time.sleep(2)
             return {"out2":fishtype}
  
-
-
-
-
-
 
 
 
@@ -120,7 +115,7 @@ class Fishing:
         img = cap(region=[1595, 955, 74, 74])
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         edge_output = cv2.Canny(gray, 50, 150) #进行图像边缘检测
-        logger.info(f'{self.bite} and {edge_output}')
+        #logger.info(f'{self.bite} and {edge_output}')
         return psnr(self.bite, edge_output)>10
 
     def get_state(self, all_box=False):
@@ -160,7 +155,7 @@ class Fishing:
         for x in range(4,360,2):
             px=int(cx+self.r_ring*np.sin(np.deg2rad(x)))
             py=int(cy-self.r_ring*np.cos(np.deg2rad(x)))
-            if np.mean(np.abs(self.img[py,px,:]-self.std_color))>5:
+            if np.mean(np.abs(self.img[py,px,:]-self.std_color))>50:
                 return x//2-2
         return 360//2-2
 
