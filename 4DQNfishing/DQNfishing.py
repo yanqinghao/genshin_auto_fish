@@ -33,7 +33,7 @@ from collections import Counter
 import traceback
 
 
-@app.input(Json(key="inputData1", alias="msgin",default="Suanpan"))
+@app.input(String(key="inputData1", alias="msgin",default="Suanpan"))
 @app.param(Int(key="param1", alias="n_states"))
 @app.param(Int(key="param2", alias="n_actions"))
 @app.param(Int(key="param3", alias="step_tick"))
