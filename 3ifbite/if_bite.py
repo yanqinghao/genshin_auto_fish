@@ -35,7 +35,7 @@ import traceback
 
 
 @app.input(Json(key="inputData1", alias="msgin",default="Suanpan"))
-@app.output(Json(key="outputData1",alias="out1"))
+@app.output(String(key="outputData1",alias="out1"))
 @app.output(Json(key="outputData2",alias="out2"))
 def hello_world(context):
     args = context.args
