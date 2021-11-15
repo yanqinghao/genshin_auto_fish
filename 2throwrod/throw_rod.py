@@ -35,7 +35,7 @@ import traceback
 
 
 #@app.input(Image(key="inputData1", default="Suanpan"))
-@app.input(List(key="inputData1", alias="msgin",default="Suanpan"))
+@app.input(Json(key="inputData1", alias="msgin",default="Suanpan"))
 #@app.input(String(key="inputData1", alias="msgin",default="Suanpan"))
 #@app.param(String(key="param1", alias="windowname"))
 #@app.param(String(key="param2", alias="region"))
@@ -46,7 +46,7 @@ import traceback
 @app.param(Float(key="param5", alias="nms"))
 @app.param(Int(key="param6", alias="tsize"))
 @app.param(String(key="param7", alias="device"))
-@app.output(List(key="outputData1",alias="msgout"))
+@app.output(Json(key="outputData1",alias="msgout"))
 
 def hello_world(context):
     args = context.args
@@ -131,16 +131,16 @@ def hello_world(context):
     #agent.load_state_dict(torch.load(model_dir))
     #agent.eval()
 
-    fishlist = args.inputData1
+    fishlist = args.inputData1 #list格式输入
     #typestr= args.inputData1 #前接输入框输['hua jiang']
     #fishtype=eval(typestr)
     fish_type=fishlist[0]
     #cap()
     winsound.Beep(330, 550)
-    time.sleep(8)
+    time.sleep(5)
     throw_rod(predictor,fish_type)
-    logger.info(f'{fish_type}')
-    return fishlist
+    logger.info(fish_type)
+    return fishlist #list输出
 
 
     
