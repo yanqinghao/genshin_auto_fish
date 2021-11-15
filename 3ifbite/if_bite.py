@@ -34,13 +34,13 @@ from collections import Counter
 import traceback
 
 
-@app.input(List(key="inputData1", alias="msgin",default="Suanpan"))
-@app.output(List(key="outputData1",alias="out1"))
-@app.output(List(key="outputData2",alias="out2"))
+@app.input(Json(key="inputData1", alias="msgin",default="Suanpan"))
+@app.output(Json(key="outputData1",alias="out1"))
+@app.output(Json(key="outputData2",alias="out2"))
 def hello_world(context):
     args = context.args
 
-    fishtype = args.inputData1
+    fishlist = args.inputData1
 
     winsound.Beep(330, 550)
     time.sleep(1)
@@ -59,7 +59,7 @@ def hello_world(context):
         if times>bite_timeout:
             env.drag()
             time.sleep(2)
-            return {"out2":fishtype}
+            return {"out2":fishlist}
  
 
 
