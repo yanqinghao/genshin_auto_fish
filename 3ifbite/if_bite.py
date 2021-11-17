@@ -175,7 +175,7 @@ class Fishing:
         self.reward=score-self.last_score
         self.last_score=score
 
-        return self.get_state(), self.reward, (self.step_count>self.max_step or (self.zero_count>=15 and self.fish_start) or score>176)
+        return self.get_state(), self.reward, (self.step_count>self.max_step or (self.zero_count>=6 and self.fish_start) or score>176)
 
     def render(self):
         pass
