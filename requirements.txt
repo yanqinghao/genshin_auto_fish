@@ -19,3 +19,4 @@ torchvision==0.8.1+cpu
 thop
 git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
 suanpan-core
+./
