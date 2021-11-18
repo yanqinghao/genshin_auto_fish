@@ -1,0 +1,21 @@
+cython
+scikit-image
+loguru
+matplotlib
+tabulate
+tqdm
+pywin32
+PyAutoGUI
+PyYAML>=5.3.1
+opencv_python
+keyboard
+Pillow
+pymouse
+numpy==1.19.5
+-f https://download.pytorch.org/whl/torch_stable.html
+torch==1.7.0+cpu
+-f https://download.pytorch.org/whl/torch_stable.html
+torchvision==0.8.1+cpu
+thop
+git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
+suanpan-core

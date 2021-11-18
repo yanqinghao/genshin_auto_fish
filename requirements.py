@@ -52,7 +52,7 @@ def main():
     torch==1.7.0+{"cpu" if args.cuda is None else "cu" + args.cuda} -f https://download.pytorch.org/whl/torch_stable.html
     torchvision==0.8.1+{"cpu" if args.cuda is None else "cu" + args.cuda} --no-deps -f https://download.pytorch.org/whl/torch_stable.html
     thop --no-deps
-    git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
+    git+https://cf.xiaoyaozi.ga/https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
     """
 
     for line in pkgs.split("\n"):

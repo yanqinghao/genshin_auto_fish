@@ -27,6 +27,7 @@ with open(CONFIG_PATH, encoding='utf-8') as f:
     DEFAULT_MONITOR_WIDTH = result.get("windows").get("monitor_width")
     DEFAULT_MONITOR_HEIGHT = result.get("windows").get("monitor_height")
     WINDOW_NAME = result.get("game").get("window_name")
+
 handle = win32gui.FindWindow(None, WINDOW_NAME)   
 
 win32gui.SendMessage(handle, win32con.WM_SYSCOMMAND, win32con.SC_RESTORE, 0) #restore窗口   
