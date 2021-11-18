@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, print_function
 
-import time
 import cv2
-import torch
+import time
 import winsound
 import numpy as np
 from copy import deepcopy
@@ -11,42 +10,37 @@ from copy import deepcopy
 import suanpan
 from suanpan.app import app
 from suanpan.log import logger
-from suanpan.app.arguments import String, Int
+from suanpan.app.arguments import String, Json
 
-from fisher.models import FishNet
 from utils import *
 
 restore_saved_module("threading")
 
-@app.input(String(key="inputData1", alias="msgin", default="Suanpan"))
-@app.param(Int(key="param1", alias="n_states"))
-@app.param(Int(key="param2", alias="n_actions"))
-@app.param(Int(key="param3", alias="step_tick"))
-@app.param(String(key="param4", alias="model_dir"))
+@app.input(Json(key="inputData1", alias="msgin", default="Suanpan"))
 @app.output(String(key="outputData1", alias="out1"))
-def DQNFishing(context):
+@app.output(Json(key="outputData2", alias="out2"))
+def ifBite(context):
     args = context.args
 
+    fishlist = args.inputData1
+
     winsound.Beep(330, 550)
+    time.sleep(1)
 
-    agent = FishNet(in_ch=args.n_states, out_ch=args.n_actions)
-    agent.load_state_dict(torch.load(args.model_dir))
-    agent.eval()
-
+    bite_timeout = 20
+    times = 0
     env = Fishing(delay=0.1, max_step=10000, show_det=True)
+    while True:
+        if env.is_bite():
+            env.drag()
+            return {"out1": "bite"}
 
-    state = env.reset(
-    )  # return self.scale(bbox_l[4]),self.scale(bbox_r[4]),self.scale(bbox_n[4])
-    for i in range(env.max_step):
-        state = torch.FloatTensor(state).unsqueeze(0)
-        action = agent(state)
-        action = torch.argmax(action, dim=1).numpy()
-        state, reward, done = env.step(action)
-        if done:
-            break
-        time.sleep(3)
-    logger.info("next round")
-    return "next round"
+        time.sleep(0.5)
+        times += 1
+        if times > bite_timeout:
+            env.drag()
+            time.sleep(2)
+            return {"out2": fishlist}
 
 
 class Fishing:
@@ -54,11 +48,11 @@ class Fishing:
                  delay=0.1,
                  max_step=100,
                  show_det=True):  #''', predictor=None'''
-        self.t_l = cv2.imread('./imgs/target_left.png')
-        self.t_r = cv2.imread('./imgs/target_right.png')
-        self.t_n = cv2.imread('./imgs/target_now.png')
-        self.im_bar = cv2.imread('./imgs/bar2.png')
-        self.bite = cv2.imread('./imgs/bite.png',
+        self.t_l = cv2.imread('./components/imgs/target_left.png')
+        self.t_r = cv2.imread('./components/imgs/target_right.png')
+        self.t_n = cv2.imread('./components/imgs/target_now.png')
+        self.im_bar = cv2.imread('./components/imgs/bar2.png')
+        self.bite = cv2.imread('./components/imgs/bite.png',
                                cv2.IMREAD_GRAYSCALE)
         self.std_color = np.array([192, 255, 255])
         self.r_ring = 21
@@ -100,7 +94,7 @@ class Fishing:
             img = deepcopy(img)
             cv2.rectangle(img, bbox_bar[:2], bbox_bar[2:4], (0, 0, 255),
                           1)  # 画出矩形位置
-            cv2.imwrite(f'./img_tmp/bar.jpg', img)
+            cv2.imwrite(f'../components/img_tmp/bar.jpg', img)
         return bbox_bar[1] - 9, bbox_bar
 
     def is_bite(self):
@@ -143,7 +137,7 @@ class Fishing:
                         fontFace=fontFace,
                         thickness=thickness,
                         color=(255, 255, 0))
-            cv2.imwrite(f'./img_tmp/{self.count}.jpg', img)
+            cv2.imwrite(f'./components/img_tmp/{self.count}.jpg', img)
         self.count += 1
 
         #voc dataset

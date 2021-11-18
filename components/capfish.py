@@ -1,42 +1,29 @@
-import suanpan
-from suanpan.app import app
-from suanpan.app.arguments import String, Image, Npy, Json, List,Float, Int
-from suanpan.log import logger
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, print_function
 
-import argparse
 import os
+import cv2
 import time
-
 import torch
-import keyboard
+import suanpan
 import winsound
-
+from copy import deepcopy
+from collections import Counter
 from yolox.exp import get_exp
 from yolox.utils import fuse_model, get_model_info
-
-#from fisher.environment import *
-#from fisher.predictor import *
-#from fisher.models import FishNet
-
-import time
-#from loguru import logger
-import cv2
-
 from yolox.data.data_augment import ValTransform
 from yolox.data.datasets import FISH_CLASSES
 from yolox.utils import postprocess, vis
 
+from suanpan.app import app
+from suanpan.log import logger
+from suanpan.app.arguments import String, Json, Float, Int
+
 from utils import *
-import pyautogui
-from copy import deepcopy
-from collections import Counter
-import traceback
 
+restore_saved_module("threading")
 
-#@app.input(Image(key="inputData1", default="Suanpan"))
-@app.input(String(key="inputData1", alias="msgin",default="Suanpan"))
-#@app.param(String(key="param1", alias="windowname"))
-#@app.param(String(key="param2", alias="region"))
+@app.input(String(key="inputData1", alias="msgin", default="Suanpan"))
 @app.param(String(key="param1", alias="demo"))
 @app.param(String(key="param2", alias="exp_file"))
 @app.param(String(key="param3", alias="ckpt"))
@@ -44,28 +31,22 @@ import traceback
 @app.param(Float(key="param5", alias="nms"))
 @app.param(Int(key="param6", alias="tsize"))
 @app.param(String(key="param7", alias="device"))
-@app.output(Json(key="outputData1",alias="msgout"))
-
-def hello_world(context):
+@app.output(Json(key="outputData1", alias="msgout"))
+def capFish(context):
     args = context.args
-    #cap=args.inputData1
-    #args.exp_file='yolox/exp/yolox_tiny_fish.py' 右栏
-    #trt_file='weights/best_tiny3.pth' #右栏
-    #ckpt='weights/best_tiny3.pth' #右栏
-    #device='cpu' #右栏
 
-    name=None
-    experiment_name=None
-    fp16=False
-    legacy=False
-    fuse=False
-    trt=False
+    name = None
+    experiment_name = None
+    fp16 = False
+    legacy = False
+    fuse = False
+    trt = False
 
     #DQN
-    n_states=3
-    n_actions=2
-    step_tick=12
-    model_dir='./components/weights/fish_genshin_net.pth'
+    n_states = 3
+    n_actions = 2
+    step_tick = 12
+    model_dir = './weights/fish_genshin_net.pth'
 
     exp = get_exp(args.exp_file, name)
 
@@ -83,15 +64,14 @@ def hello_world(context):
         exp.test_size = (args.tsize, args.tsize)
 
     model = exp.get_model()
-    logger.info("Model Summary: {}".format(get_model_info(model, exp.test_size)))
-
+    logger.info("Model Summary: {}".format(get_model_info(
+        model, exp.test_size)))
 
     if args.device == "gpu":
         model.cuda()
         if fp16:
             model.half()  # to FP16
     model.eval()
-
 
     if not trt:
         if args.ckpt is None:
@@ -124,18 +104,14 @@ def hello_world(context):
         trt_file = None
         decoder = None
 
-    predictor = Predictor(model, exp, FISH_CLASSES, trt_file, decoder, args.device, fp16, legacy)
-
-    #agent = FishNet(in_ch=n_states, out_ch=n_actions) #DQN
-    #agent.load_state_dict(torch.load(model_dir))
-    #agent.eval()
+    predictor = Predictor(model, exp, FISH_CLASSES, trt_file, decoder,
+                          args.device, fp16, legacy)
 
     print('init ok')
     winsound.Beep(500, 500)
     time.sleep(5)
-    #keyboard.wait('r')
     if args.demo == "image":
-        fishlist=get_fish_types(predictor, n=12, rate=0.6)
+        fishlist = get_fish_types(predictor, n=12, rate=0.6)
     logger.info(fishlist)
     winsound.Beep(500, 500)
     return fishlist
@@ -187,7 +163,8 @@ class Predictor(object):
         img_info["width"] = width
         img_info["raw_img"] = img
 
-        ratio = min(self.test_size[0] / img.shape[0], self.test_size[1] / img.shape[1])
+        ratio = min(self.test_size[0] / img.shape[0],
+                    self.test_size[1] / img.shape[1])
         img_info["ratio"] = ratio
 
         img, _ = self.preproc(img, None, self.test_size)
@@ -203,10 +180,11 @@ class Predictor(object):
             outputs = self.model(img)
             if self.decoder is not None:
                 outputs = self.decoder(outputs, dtype=outputs.type())
-            outputs = postprocess(
-                outputs, self.num_classes, self.confthre,
-                self.nmsthre, class_agnostic=True
-            )
+            outputs = postprocess(outputs,
+                                  self.num_classes,
+                                  self.confthre,
+                                  self.nmsthre,
+                                  class_agnostic=True)
             logger.info("Infer time: {:.4f}s".format(time.time() - t0))
         return outputs, img_info
 
@@ -221,12 +199,14 @@ class Predictor(object):
             # preprocessing: resize
             bboxes /= ratio
             scores = item[4] * item[5]
-            obj_list.append([self.cls_names[int(item[6])], scores, [bboxes[0], bboxes[1], bboxes[2], bboxes[3]]])
+            obj_list.append([
+                self.cls_names[int(item[6])], scores,
+                [bboxes[0], bboxes[1], bboxes[2], bboxes[3]]
+            ])
         if with_info:
             return obj_list, outputs, img_info
         else:
             return obj_list
-
 
     def visual(self, output, img_info, cls_conf=0.35):
         ratio = img_info["ratio"]
@@ -247,7 +227,6 @@ class Predictor(object):
         return vis_res
 
 
-
 def get_fish_types(predictor, n=12, rate=0.6):
     counter = Counter()
     fx = lambda x: int(np.sign(np.cos(np.pi * (x / (n // 2)) + 1e-4)))
@@ -255,7 +234,7 @@ def get_fish_types(predictor, n=12, rate=0.6):
         obj_list = predictor.image_det(cap())
         if obj_list is None:
             mouse_move(70 * fx(i), 0)
-            time.sleep(0.1) #推迟执行的秒数。
+            time.sleep(0.1)  #推迟执行的秒数。
             continue
         cls_list = set([x[0] for x in obj_list])
         counter.update(cls_list)

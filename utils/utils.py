@@ -1,5 +1,5 @@
 import time
-
+import gevent
 import cv2
 import pyautogui
 import numpy as np
@@ -11,12 +11,29 @@ CONFIG_PATH = Path(__file__).parent.parent.joinpath("config.yaml")
 assert CONFIG_PATH.is_file()
 
 
+def restore_saved_module(module):
+    """
+    gevent monkey patch keeps a list of all patched modules.
+    This will restore the original ones
+    :param module: to unpatch
+    :return:
+    """
+    # Check the saved attributes in geven monkey patch
+    if not (module in gevent.monkey.saved):
+        return
+    _module = __import__(module)
+
+    # If it exist unpatch it
+    for attr in gevent.monkey.saved[module]:
+        if hasattr(_module, attr):
+            setattr(_module, attr, gevent.monkey.saved[module][attr])
+
+
 with open(CONFIG_PATH, encoding='utf-8') as f:
     result = yaml.safe_load(f)
     DEFAULT_MONITOR_WIDTH = result.get("windows").get("monitor_width")
     DEFAULT_MONITOR_HEIGHT = result.get("windows").get("monitor_height")
     WINDOW_NAME = result.get("game").get("window_name")
-
 
 # def cap(region=None):
 #     img = pyautogui.screenshot(region=region) if region else pyautogui.screenshot()
@@ -97,7 +114,7 @@ def list_add(li, num):
 
 
 def psnr(img1, img2):
-    mse = np.mean((img1 / 255.0 - img2 / 255.0) ** 2)
+    mse = np.mean((img1 / 255.0 - img2 / 255.0)**2)
     if mse < 1.0e-10:
         return 100
     PIXEL_MAX = 1
