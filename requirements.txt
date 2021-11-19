@@ -18,5 +18,5 @@ torch==1.7.0+cpu
 torchvision==0.8.1+cpu
 thop
 git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI
-suanpan-core
+python-suanpan-slim
 ./
