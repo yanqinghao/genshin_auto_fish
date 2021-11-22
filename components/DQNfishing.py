@@ -16,7 +16,6 @@ from suanpan.app.arguments import String, Int
 from fisher.models import FishNet
 from utils import *
 
-restore_saved_module("threading")
 
 @app.input(String(key="inputData1", alias="msgin", default="Suanpan"))
 @app.param(Int(key="param1", alias="n_states"))

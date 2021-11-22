@@ -17,7 +17,6 @@ from suanpan.log import logger
 
 from utils import *
 
-restore_saved_module("threading")
 
 @app.input(Json(key="inputData1", alias="msgin", default="Suanpan"))
 @app.param(String(key="param1", alias="demo"))

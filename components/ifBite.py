@@ -14,7 +14,6 @@ from suanpan.app.arguments import String, Json
 
 from utils import *
 
-restore_saved_module("threading")
 
 @app.input(Json(key="inputData1", alias="msgin", default="Suanpan"))
 @app.output(String(key="outputData1", alias="out1"))

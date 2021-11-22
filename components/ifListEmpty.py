@@ -4,11 +4,11 @@ from __future__ import absolute_import, print_function
 import suanpan
 from suanpan.app import app
 from suanpan.log import logger
-from suanpan.app.arguments import String, List
+from suanpan.app.arguments import String, Json
 
 
-@app.input(List(key="inputData1", default="Suanpan"))
-@app.output(List(key="outputData1", alias="out1"))
+@app.input(Json(key="inputData1", default="Suanpan"))
+@app.output(Json(key="outputData1", alias="out1"))
 @app.output(String(key="outputData2", alias="out2"))
 def ifListEmpty(context):
     args = context.args

@@ -17,11 +17,11 @@ from yolox.utils import postprocess, vis
 
 from suanpan.app import app
 from suanpan.log import logger
-from suanpan.app.arguments import String, Json, Float, Int
+from suanpan.app.arguments import String, Int, Float, Json
 
 from utils import *
 
-restore_saved_module("threading")
+
 
 @app.input(String(key="inputData1", alias="msgin", default="Suanpan"))
 @app.param(String(key="param1", alias="demo"))
