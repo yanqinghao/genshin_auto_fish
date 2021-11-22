@@ -132,3 +132,4 @@ tests
 .vscode
 *.csv
 *.pth
+img_tmp

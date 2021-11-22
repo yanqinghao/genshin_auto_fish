@@ -32,14 +32,14 @@ def ifBite(context):
     while True:
         if env.is_bite():
             env.drag()
-            return {"out1": "bite"}
+            return "bite"
 
         time.sleep(0.5)
         times += 1
         if times > bite_timeout:
             env.drag()
             time.sleep(2)
-            return {"out2": fishlist}
+            return None, fishlist
 
 
 class Fishing:
@@ -47,11 +47,11 @@ class Fishing:
                  delay=0.1,
                  max_step=100,
                  show_det=True):  #''', predictor=None'''
-        self.t_l = cv2.imread('./components/imgs/target_left.png')
-        self.t_r = cv2.imread('./components/imgs/target_right.png')
-        self.t_n = cv2.imread('./components/imgs/target_now.png')
-        self.im_bar = cv2.imread('./components/imgs/bar2.png')
-        self.bite = cv2.imread('./components/imgs/bite.png',
+        self.t_l = cv2.imread('./imgs/target_left.png')
+        self.t_r = cv2.imread('./imgs/target_right.png')
+        self.t_n = cv2.imread('./imgs/target_now.png')
+        self.im_bar = cv2.imread('./imgs/bar2.png')
+        self.bite = cv2.imread('./imgs/bite.png',
                                cv2.IMREAD_GRAYSCALE)
         self.std_color = np.array([192, 255, 255])
         self.r_ring = 21
@@ -93,7 +93,7 @@ class Fishing:
             img = deepcopy(img)
             cv2.rectangle(img, bbox_bar[:2], bbox_bar[2:4], (0, 0, 255),
                           1)  # 画出矩形位置
-            cv2.imwrite(f'../components/img_tmp/bar.jpg', img)
+            cv2.imwrite(f'../img_tmp/bar.jpg', img)
         return bbox_bar[1] - 9, bbox_bar
 
     def is_bite(self):
@@ -136,7 +136,7 @@ class Fishing:
                         fontFace=fontFace,
                         thickness=thickness,
                         color=(255, 255, 0))
-            cv2.imwrite(f'./components/img_tmp/{self.count}.jpg', img)
+            cv2.imwrite(f'./img_tmp/{self.count}.jpg', img)
         self.count += 1
 
         #voc dataset

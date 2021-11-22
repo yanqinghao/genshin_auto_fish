@@ -27,6 +27,7 @@ def DQNFishing(context):
     args = context.args
 
     winsound.Beep(330, 550)
+    logger.info("start fishing")
 
     agent = FishNet(in_ch=args.n_states, out_ch=args.n_actions)
     agent.load_state_dict(torch.load(args.model_dir))
@@ -40,6 +41,7 @@ def DQNFishing(context):
         state = torch.FloatTensor(state).unsqueeze(0)
         action = agent(state)
         action = torch.argmax(action, dim=1).numpy()
+        logger.info(action)
         state, reward, done = env.step(action)
         if done:
             break
@@ -85,6 +87,7 @@ class Fishing:
 
     def do_action(self, action):
         if action == 1:
+            logger.info("do drag")
             self.drag()
 
     def scale(self, x):

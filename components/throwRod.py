@@ -22,8 +22,8 @@ from utils import *
 @app.param(String(key="param1", alias="demo"))
 @app.param(String(key="param2", alias="exp_file"))
 @app.param(String(key="param3", alias="ckpt"))
-@app.param(Float(key="param4", alias="conf"))
-@app.param(Float(key="param5", alias="nms"))
+@app.param(Float(key="param4", alias="conf", default=0.25))
+@app.param(Float(key="param5", alias="nms", default=0.45))
 @app.param(Int(key="param6", alias="tsize"))
 @app.param(String(key="param7", alias="device"))
 @app.output(Json(key="outputData1", alias="msgout"))
@@ -41,7 +41,7 @@ def throwRod(context):
     n_states = 3
     n_actions = 2
     step_tick = 12
-    model_dir = './components/weights/fish_genshin_net.pth'
+    model_dir = './weights/fish_genshin_net.pth'
 
     exp = get_exp(args.exp_file, name)
 

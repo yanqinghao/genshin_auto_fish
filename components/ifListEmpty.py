@@ -14,11 +14,11 @@ def ifListEmpty(context):
     args = context.args
     fish_list = args.inputData1
     if fish_list != []:
-        logger.info(f'{fish_list}')
-        return {"out1": fish_list}
+        logger.info(f'out1 : .... {fish_list}')
+        return fish_list
     else:
-        logger.info(f'{fish_list}')
-        return {"out2": "cap again"}
+        logger.info(f'out2 : .... {fish_list}')
+        return None, "cap again"
 
 
 if __name__ == "__main__":
