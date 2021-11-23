@@ -7,6 +7,8 @@ import argparse
 import os
 import time
 
+#from loguru import logger
+
 import torch
 import keyboard
 import winsound
@@ -19,7 +21,6 @@ from yolox.utils import fuse_model, get_model_info
 #from fisher.models import FishNet
 
 import time
-#from loguru import logger
 import cv2
 
 from yolox.data.data_augment import ValTransform
@@ -34,7 +35,8 @@ import traceback
 
 
 #@app.input(Image(key="inputData1", default="Suanpan"))
-@app.input(String(key="inputData1", alias="msgin",default="Suanpan"))
+@app.input(Json(key="inputData1", alias="msgin",default="Suanpan"))
+#@app.input(String(key="inputData1", alias="msgin",default="Suanpan"))
 #@app.param(String(key="param1", alias="windowname"))
 #@app.param(String(key="param2", alias="region"))
 @app.param(String(key="param1", alias="demo"))
@@ -53,7 +55,6 @@ def hello_world(context):
     #trt_file='weights/best_tiny3.pth' #右栏
     #ckpt='weights/best_tiny3.pth' #右栏
     #device='cpu' #右栏
-
     name=None
     experiment_name=None
     fp16=False
@@ -130,18 +131,84 @@ def hello_world(context):
     #agent.load_state_dict(torch.load(model_dir))
     #agent.eval()
 
-    print('init ok')
-    winsound.Beep(500, 500)
+    fishlist = args.inputData1 #list格式输入
+    #typestr= args.inputData1 #前接输入框输['hua jiang']
+    #fishtype=eval(typestr)
+    fish_type=fishlist[0]
+    #cap()
+    winsound.Beep(330, 550)
     time.sleep(5)
-    #keyboard.wait('r')
-    if args.demo == "image":
-        fishlist=get_fish_types(predictor, n=12, rate=0.6)
-    logger.info(fishlist)
-    winsound.Beep(500, 500)
-    return fishlist
+    throw_rod(predictor,fish_type)
+    logger.info(fish_type)
+    return fishlist #list输出
 
 
-#从predictor粘贴的
+    
+    
+def throw_rod(predictor,fish_type):
+    food_imgs = [
+            cv2.imread('./imgs/food_gn.png'),
+            cv2.imread('./imgs/food_cm.png'),
+            cv2.imread('./imgs/food_bug.png'),
+            cv2.imread('./imgs/food_fy.png'),
+        ]
+    
+    ff_dict={'hua jiang':0, 'ji yu':1, 'die yu':2, 'jia long':3, 'pao yu':3}
+    dist_dict={'hua jiang':130, 'ji yu':80, 'die yu':80, 'jia long':80, 'pao yu':80}
+    food_rgn=[580,400,740,220]
+    last_fish_type='hua jiang'
+    #self.last_fish_type='die yu' # 钓雷鸣仙
+    show_det=True #show detail: true or false
+    os.makedirs('img_tmp/', exist_ok=True)    
+
+    mouse_down(960, 540)
+    winsound.Beep(800, 400)
+    time.sleep(1)
+
+    def move_func(dist):
+        if dist>100:
+            return 50 * np.sign(dist)
+        else:
+            return (abs(dist)/2.5+10) * np.sign(dist)
+
+    for i in range(50):
+        try:
+            obj_list, outputs, img_info = predictor.image_det(cap(), with_info=True)
+            if show_det:
+                cv2.imwrite(f'img_tmp/det{i}.png', predictor.visual(outputs[0],img_info))
+                #实际上没有读取这些png
+            rod_info = sorted(list(filter(lambda x: x[0] == 'rod', obj_list)), key=lambda x: x[1], reverse=True)
+            if len(rod_info)<=0:
+                mouse_move(np.random.randint(-50,50), np.random.randint(-50,50))
+                time.sleep(0.1)
+                continue
+            rod_info=rod_info[0]
+            rod_cx = (rod_info[2][0] + rod_info[2][2]) / 2
+            rod_cy = (rod_info[2][1] + rod_info[2][3]) / 2
+
+            fish_info = min(list(filter(lambda x: x[0] == fish_type, obj_list)),
+                            key=lambda x: distance((x[2][0]+x[2][2])/2, (x[2][1]+x[2][3])/2, rod_cx, rod_cy))
+
+            if (fish_info[2][0] + fish_info[2][2]) > (rod_info[2][0] + rod_info[2][2]):
+                #dist = -self.dist_dict[fish_type] * np.sign(fish_info[2][2] - (rod_info[2][0] + rod_info[2][2]) / 2)
+                x_dist = fish_info[2][0] - dist_dict[fish_type] - rod_cx
+            else:
+                x_dist = fish_info[2][2] + dist_dict[fish_type] - rod_cx
+
+            print(x_dist, (fish_info[2][3] + fish_info[2][1]) / 2 - rod_info[2][3])
+            if abs(x_dist)<30 and abs((fish_info[2][3] + fish_info[2][1]) / 2 - rod_info[2][3])<30:
+                break
+
+            dx = int(move_func(x_dist))
+            dy = int(move_func(((fish_info[2][3]) + fish_info[2][1]) / 2 - rod_info[2][3]))
+            mouse_move(dx, dy)
+        except Exception as e:
+            traceback.print_exc()
+        #time.sleep(0.3)
+    mouse_up(960, 540)
+    winsound.Beep(800, 400)
+
+
 class Predictor(object):
     def __init__(
         self,
@@ -245,25 +312,6 @@ class Predictor(object):
 
         vis_res = vis(img, bboxes, scores, cls, cls_conf, self.cls_names)
         return vis_res
-
-
-
-def get_fish_types(predictor, n=12, rate=0.6):
-    counter = Counter()
-    fx = lambda x: int(np.sign(np.cos(np.pi * (x / (n // 2)) + 1e-4)))
-    for i in range(n):
-        obj_list = predictor.image_det(cap())
-        if obj_list is None:
-            mouse_move(70 * fx(i), 0)
-            time.sleep(0.1) #推迟执行的秒数。
-            continue
-        cls_list = set([x[0] for x in obj_list])
-        counter.update(cls_list)
-        mouse_move(70 * fx(i), 0)
-        time.sleep(0.2)
-    fish_list = [k for k, v in dict(counter).items() if v / n >= rate]
-    return fish_list
-
 
 if __name__ == "__main__":
     suanpan.run(app)
