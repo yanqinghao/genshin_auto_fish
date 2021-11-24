@@ -45,7 +45,7 @@ def DQNFishing(context):
         state, reward, done = env.step(action)
         if done:
             break
-        time.sleep(3)
+    time.sleep(3)
     logger.info("next round")
     return "next round"
 
