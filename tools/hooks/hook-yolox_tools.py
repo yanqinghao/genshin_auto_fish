@@ -4,5 +4,5 @@ from PyInstaller.utils.hooks import logger
 
 datas, binaries, hiddenimports = collect_all('yolox_tools', include_py_files=False)
 
-logger.info('Collecting suanpan components datas: {}'.format(datas))
-logger.info('Collecting suanpan components hiddenimports: {}'.format(hiddenimports))
+logger.info('Collecting yolox_tools datas: {}'.format(datas))
+logger.info('Collecting yolox_tools hiddenimports: {}'.format(hiddenimports))
