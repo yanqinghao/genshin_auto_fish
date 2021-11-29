@@ -4,6 +4,7 @@ from __future__ import absolute_import, print_function
 import os
 import cv2
 import time
+import shutil
 import torch
 import suanpan
 import winsound
@@ -35,7 +36,8 @@ from utils import *
 def capFish(context):
     args = context.args
     logger.info(args)
-
+    if os.path.exists("img_tmp"):
+        shutil.rmtree("img_tmp")
     name = None
     experiment_name = None
     fp16 = False
