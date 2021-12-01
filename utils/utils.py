@@ -1,5 +1,7 @@
 import time
 import gevent
+import os
+import sys
 import cv2
 import pyautogui
 import numpy as np
@@ -9,6 +11,17 @@ import yaml
 
 CONFIG_PATH = Path(__file__).parent.parent.joinpath("config.yaml")
 assert CONFIG_PATH.is_file()
+
+
+def resourcepath(relativepath):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        basepath = sys._MEIPASS
+    except Exception:
+        basepath = os.path.abspath(".")
+
+    return os.path.join(basepath, relativepath)
 
 
 def restore_saved_module(module):

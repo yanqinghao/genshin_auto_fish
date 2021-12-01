@@ -120,10 +120,10 @@ def throwRod(context):
 
 def throw_rod(predictor, fish_type):
     food_imgs = [
-        cv2.imread('./imgs/food_gn.png'),
-        cv2.imread('./imgs/food_cm.png'),
-        cv2.imread('./imgs/food_bug.png'),
-        cv2.imread('./imgs/food_fy.png'),
+        cv2.imread(resourcepath('imgs/food_gn.png')),
+        cv2.imread(resourcepath('imgs/food_cm.png')),
+        cv2.imread(resourcepath('imgs/food_bug.png')),
+        cv2.imread(resourcepath('imgs/food_fy.png')),
     ]
 
     ff_dict = {

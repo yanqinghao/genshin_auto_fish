@@ -51,11 +51,12 @@ class Fishing:
                  delay=0.1,
                  max_step=100,
                  show_det=True):  #''', predictor=None'''
-        self.t_l = cv2.imread('imgs/target_left.png')
-        self.t_r = cv2.imread('imgs/target_right.png')
-        self.t_n = cv2.imread('imgs/target_now.png')
-        self.im_bar = cv2.imread('imgs/bar2.png')
-        self.bite = cv2.imread('imgs/bite.png', cv2.IMREAD_GRAYSCALE)
+        self.t_l = cv2.imread(resourcepath('imgs/target_left.png'))
+        self.t_r = cv2.imread(resourcepath('imgs/target_right.png'))
+        self.t_n = cv2.imread(resourcepath('imgs/target_now.png'))
+        self.im_bar = cv2.imread(resourcepath('imgs/bar2.png'))
+        self.bite = cv2.imread(resourcepath('imgs/bite.png'),
+                               cv2.IMREAD_GRAYSCALE)
         self.std_color = np.array([192, 255, 255])
         self.r_ring = 21
         self.delay = delay

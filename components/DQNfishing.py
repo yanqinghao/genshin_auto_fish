@@ -30,7 +30,8 @@ def DQNFishing(context):
     logger.info("start fishing")
 
     agent = FishNet(in_ch=args.n_states, out_ch=args.n_actions)
-    agent.load_state_dict(torch.load(args.model_dir))
+    logger.info(resourcepath(args.model_dir))
+    agent.load_state_dict(torch.load(resourcepath(args.model_dir)))
     agent.eval()
 
     env = Fishing(delay=0.1, max_step=10000, show_det=True)
@@ -55,11 +56,11 @@ class Fishing:
                  delay=0.1,
                  max_step=100,
                  show_det=True):  #''', predictor=None'''
-        self.t_l = cv2.imread('./imgs/target_left.png')
-        self.t_r = cv2.imread('./imgs/target_right.png')
-        self.t_n = cv2.imread('./imgs/target_now.png')
-        self.im_bar = cv2.imread('./imgs/bar2.png')
-        self.bite = cv2.imread('./imgs/bite.png',
+        self.t_l = cv2.imread(resourcepath(r'imgs\target_left.png'))
+        self.t_r = cv2.imread(resourcepath(r'imgs\target_right.png'))
+        self.t_n = cv2.imread(resourcepath(r'imgs\target_now.png'))
+        self.im_bar = cv2.imread(resourcepath(r'imgs\bar2.png'))
+        self.bite = cv2.imread(resourcepath(r'imgs\bite.png'),
                                cv2.IMREAD_GRAYSCALE)
         self.std_color = np.array([192, 255, 255])
         self.r_ring = 21
