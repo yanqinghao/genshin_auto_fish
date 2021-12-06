@@ -7,6 +7,12 @@
 # 流程图
 <font color=#66CCFF>**长流程图**</font>
 
+![image](https://github.com/yanqinghao/genshin_auto_fish/blob/sp-client/readmefile/long.png)
+
+<font color=#66CCFF>**短流程图**</font>
+
+![image](https://github.com/yanqinghao/genshin_auto_fish/blob/sp-client/readmefile/short.png)
+
 # 模板和组件包下载
 长流程全自动模板下载链接：https://suanpan-public.oss-cn-shanghai.aliyuncs.com/suanpan-genshin-fishing/%E9%92%93%E9%B1%BC-%E5%85%A8%E8%87%AA%E5%8A%A8
 
