@@ -5,7 +5,7 @@
 其中YOLOX用于鱼的定位和类型的识别以及鱼竿落点的定位。DQN用于自适应控制钓鱼过程的点击，让力度落在最佳区域内。
 
 # 流程图
-
+<font color=#66CCFF>**长流程图**</font>
 
 # 模板和组件包下载
 长流程全自动模板下载链接：https://suanpan-public.oss-cn-shanghai.aliyuncs.com/suanpan-genshin-fishing/%E9%92%93%E9%B1%BC-%E5%85%A8%E8%87%AA%E5%8A%A8
