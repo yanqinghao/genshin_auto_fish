@@ -8,7 +8,7 @@ from suanpan.app import app
 from suanpan.log import logger
 
 
-def pressGenerator():
+def pressGenerator(*args, **kwargs):
     if os.path.exists("img_tmp"):
         shutil.rmtree("img_tmp")
     logger.info("Start to detect keyboard R...")

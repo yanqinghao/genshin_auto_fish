@@ -1,5 +1,4 @@
 import time
-import gevent
 import os
 import sys
 import cv2
@@ -23,23 +22,6 @@ def resourcepath(relativepath):
 
     return os.path.join(basepath, relativepath)
 
-
-def restore_saved_module(module):
-    """
-    gevent monkey patch keeps a list of all patched modules.
-    This will restore the original ones
-    :param module: to unpatch
-    :return:
-    """
-    # Check the saved attributes in geven monkey patch
-    if not (module in gevent.monkey.saved):
-        return
-    _module = __import__(module)
-
-    # If it exist unpatch it
-    for attr in gevent.monkey.saved[module]:
-        if hasattr(_module, attr):
-            setattr(_module, attr, gevent.monkey.saved[module][attr])
 
 
 with open(CONFIG_PATH, encoding='utf-8') as f:
